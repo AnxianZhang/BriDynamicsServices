@@ -1,3 +1,5 @@
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -12,7 +14,7 @@ public class BriLaunch {
         PROGRAMMER_PORT = 1314;
     }
 
-    public static void main(String[] args) throws MalformedURLException {
+    public static void main(String[] args) throws IOException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         Scanner clavier = new Scanner(System.in);
         String fileNameURL = "ftp://localhost:2121/";
 
@@ -23,7 +25,10 @@ public class BriLaunch {
 //        System.out.println("A tout instant, en tapant le nom de la classe, vous pouvez l'intégrer");
 //        System.out.println("Les clients se connectent au serveur 3000 pour lancer une activité");
 
-        new Thread(new ServeurBRi(PROGRAMMER_PORT)).start();
-        new Thread(new ServeurBRi(AMATEUR_PORT)).start();
+//        new Thread(new ServeurBRi(PROGRAMMER_PORT)).start();
+//        new Thread(new ServeurBRi(AMATEUR_PORT)).start();
+
+        ServeurBRi sProgrammer = new ServeurBRi(ServiceProgrammeurs.class, PROGRAMMER_PORT);
+        ServeurBRi sAmateur = new ServeurBRi(ServiceAmateurs.class, AMATEUR_PORT);
     }
 }

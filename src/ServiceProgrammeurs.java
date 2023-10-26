@@ -1,4 +1,12 @@
-public class ServiceProgrammeurs {
+import java.io.IOException;
+import java.net.Socket;
+
+public abstract class ServiceProgrammeurs extends Service{
+    private ServiceClient serviceClient;
+    public ServiceProgrammeurs(Socket socketClient) throws IOException {
+        super(socketClient);
+    }
+
     public static String toStringue() {
         StringBuilder activites = new StringBuilder();
         activites.append("Activités programmeurs :##");
