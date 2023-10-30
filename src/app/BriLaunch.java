@@ -1,6 +1,11 @@
+package app;
+
+import server.ServeurBRi;
+import service.ServiceAmateurs;
+import service.ServiceProgrammer;
+
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Scanner;
@@ -25,10 +30,16 @@ public class BriLaunch {
 //        System.out.println("A tout instant, en tapant le nom de la classe, vous pouvez l'intégrer");
 //        System.out.println("Les clients se connectent au serveur 3000 pour lancer une activité");
 
-//        new Thread(new ServeurBRi(PROGRAMMER_PORT)).start();
-//        new Thread(new ServeurBRi(AMATEUR_PORT)).start();
+//        new Thread(new server.ServeurBRi(PROGRAMMER_PORT)).start();
+//        new Thread(new server.ServeurBRi(AMATEUR_PORT)).start();
 
-        ServeurBRi sProgrammer = new ServeurBRi(ServiceProgrammeurs.class, PROGRAMMER_PORT);
+        ServeurBRi sProgrammer = new ServeurBRi(ServiceProgrammer.class, PROGRAMMER_PORT);
         ServeurBRi sAmateur = new ServeurBRi(ServiceAmateurs.class, AMATEUR_PORT);
+
+        Thread t1 = new Thread(sProgrammer);
+        Thread t2 = new Thread(sAmateur);
+
+        t1.start();
+        t2.start();
     }
 }

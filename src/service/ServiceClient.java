@@ -1,13 +1,24 @@
+package service;
+
+import service.Service;
+
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.lang.reflect.*;
 import java.net.Socket;
 import java.util.List;
 import java.util.Vector;
 
-public class ServiceClient {
+public abstract class ServiceClient extends Service{
     private static List<Class<? extends Runnable>> servicesClasses;
     static {
         servicesClasses = new Vector<>();
     }
+
+    public ServiceClient (Socket socketClient) throws IOException {
+        super(socketClient);
+    }
+
     public static void addService(Class<? extends Service> newServiceClass) {
         // vérifier la conformité par introspection
         try {
@@ -26,7 +37,7 @@ public class ServiceClient {
         return servicesClasses.get(numService - 1);
     }
 
-    public static String toStringue() {
+    public String toStringue() {
         StringBuilder r = new StringBuilder();
         r.append("Activités présentes :##");
         //no /n car va supprimer les text apres /n(socket not allow)
@@ -47,14 +58,13 @@ public class ServiceClient {
         return r.toString();
     }
 
-
     private static void validationBRI(Class<?> classe) throws Exception {
         if (!Modifier.isPublic(classe.getModifiers()))
             throw new Exception("La classe doit être publique");
         if (Modifier.isAbstract(classe.getModifiers()))
             throw new Exception("La classe ne doit pas être abstract");
         if (!Service.class.isAssignableFrom(classe))
-            throw new Exception("La classe doit implémenter Service");
+            throw new Exception("La classe doit implémenter service.Service");
         try {
             Constructor<?> constructor = classe.getConstructor(Socket.class);
             if (!Modifier.isPublic(constructor.getModifiers()) || constructor.getExceptionTypes().length != 0) {
@@ -74,5 +84,30 @@ public class ServiceClient {
                 method.getReturnType() != String.class||
                 method.getExceptionTypes().length != 0)
             throw new Exception("La classe doit avoir une méthode public static String toStringue() sans exception");
+    }
+
+    protected void closeSocketClient() {
+        try {
+            super.getSocketClient().close();
+            System.out.println("========== Client disconnection " + super.getSocketClient().getInetAddress() + " ==========");
+            System.out.println();
+        } catch (IOException e) {
+            System.out.println("Problem when closing socket in ServiceClient");;
+        }
+    }
+
+    @Override
+    protected Socket getSocketClient() {
+        return super.getSocketClient();
+    }
+
+    @Override
+    protected BufferedReader getSockIn() {
+        return super.getSockIn();
+    }
+
+    @Override
+    protected void println(String msg) {
+        super.println(msg);
     }
 }

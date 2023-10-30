@@ -1,10 +1,10 @@
+package service;
+
 import java.io.IOException;
 import java.net.Socket;
-import java.util.List;
-import java.util.Vector;
 
-public abstract class ServiceAmateurs extends Service{
-//    private static List<Class<? extends Service>> servicesClasses;
+public class ServiceAmateurs extends Service {
+//    private static List<Class<? extends service.Service>> servicesClasses;
 //    static {
 //        servicesClasses = new Vector<>();
 //    }
@@ -21,5 +21,10 @@ public abstract class ServiceAmateurs extends Service{
 
     public static Class<? extends Runnable> getServiceClass(int numService) {
         return serviceClient.getServiceClass(numService - 1);
+    }
+
+    @Override
+    public void run() {
+
     }
 }

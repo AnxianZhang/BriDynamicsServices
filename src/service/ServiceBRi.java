@@ -17,12 +17,12 @@
 //            PrintWriter out = new PrintWriter (client.getOutputStream ( ), true);
 //            int choix = Integer.parseInt(in.readLine());
 //            if(client.getPort()==5201) {
-//                out.println(ServiceAmateurs.toStringue() + "##Tapez le numéro de service désiré :");
-//                ServiceAmateurs.getServiceClass(choix).getConstructor(Socket.class).newInstance(this.client).run();
+//                out.println(service.ServiceAmateurs.toStringue() + "##Tapez le numéro de service désiré :");
+//                service.ServiceAmateurs.getServiceClass(choix).getConstructor(Socket.class).newInstance(this.client).run();
 //            }
 //            if(client.getPort()==1314) {
-//                out.println(ServiceProgrammeurs.toStringue() + "##Tapez le numéro de service désiré :");
-//                ServiceProgrammeurs.getActivite(choix);
+//                out.println(service.ServiceProgrammeurs.toStringue() + "##Tapez le numéro de service désiré :");
+//                service.ServiceProgrammeurs.getActivite(choix);
 //            }
 //        }
 //        catch (Exception e) {

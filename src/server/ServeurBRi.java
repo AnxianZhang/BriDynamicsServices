@@ -1,3 +1,7 @@
+package server;
+
+import service.Service;
+
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.ServerSocket;
@@ -22,6 +26,8 @@ public class ServeurBRi implements Runnable {
 
     @Override
     public void run() {
+        System.out.println("========== Server au port " + this.NUM_PORT + " cree ==========");
+
         try {
             while(true){
                 Socket socket = myServer.accept();
@@ -36,10 +42,10 @@ public class ServeurBRi implements Runnable {
             // already tested in constructor
         }
     }
-
-    protected void finalize() throws Throwable {
-        try {this.myServer.close();} catch (IOException e1) {}
-    }
+//
+//    protected void finalize() throws Throwable {
+//        try {this.myServer.close();} catch (IOException e1) {}
+//    }
 
     // lancement du serveur
     public void lancer() {
