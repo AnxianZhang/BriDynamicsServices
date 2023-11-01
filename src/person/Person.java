@@ -20,6 +20,7 @@ public interface Person {
 //        return this.hashedPwd.equals(HashPassword.getHashPassword(pdwIn, this.salt));
 //    }
 
+
     boolean isSameLogin(String login);
 
     boolean isSamePwd(String pdwIn);

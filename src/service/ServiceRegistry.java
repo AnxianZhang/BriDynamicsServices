@@ -2,19 +2,20 @@ package service;
 
 import person.Person;
 import person.Programmer;
+import person.ProgrammerOfService;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.net.MalformedURLException;
+import java.net.PortUnreachableException;
 import java.net.Socket;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ServiceRegistry {
-    private static List<Person> programmers;
+    private static List<Programmer> programmers;
     private static ConcurrentHashMap<Person, List<? extends Service>> servicesClasses;
 
 
@@ -104,13 +105,17 @@ public class ServiceRegistry {
 //        return servicesClasses.get(numService -1);
 //    }
 
-    public static void addProgrammer(String login, String pwd){
-        programmers.add(new Programmer(login, pwd));
+    public static Programmer addProgrammer(String login, String pwd, String ftpUrl) throws MalformedURLException {
+        Programmer p = new ProgrammerOfService(login, pwd, ftpUrl);
+
+        programmers.add(p);
         servicesClasses.put(programmers.get(programmers.size() - 1), new Vector<>());
+
+        return p;
     }
 
-    public static Person getProgrammer (String login, String pwd){
-        for (Person p: programmers){
+    public static Programmer getProgrammer (String login, String pwd){
+        for (Programmer p: programmers){
             if (p.isSameLogin(login) && p.isSameLogin(pwd)){
                 return p;
             }

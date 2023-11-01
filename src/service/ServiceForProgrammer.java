@@ -4,14 +4,15 @@ import person.Person;
 import person.Programmer;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.Socket;
-import java.util.List;
-import java.util.Vector;
+import java.net.URL;
+import java.net.URLClassLoader;
 
-public class ServiceProgrammer extends ServiceClient {
-    private Person currentProgrammer;
+public class ServiceForProgrammer extends ServiceClient {
+    private Programmer currentProgrammer;
 
-    public ServiceProgrammer(Socket socketClient) throws IOException {
+    public ServiceForProgrammer(Socket socketClient) throws IOException {
         super(socketClient);
 
         this.currentProgrammer = null;
@@ -30,16 +31,36 @@ public class ServiceProgrammer extends ServiceClient {
         return activites.toString();
     }
 
-    public void getActivite(int choix) {
-        switch (choix) {
+    private void changeProgrammerFtpUrl() throws IOException {
+        String newUrl = "";
+        while (!isFtpUrlCorrect(newUrl)) {
+            super.println("Enter a correct new FTP ulr: ");
+            newUrl = super.getSockIn().readLine();
+        }
+
+        this.currentProgrammer.setFtpUrl(newUrl);
+        super.println("Url Changed, press a key to continue##");
+        super.getSockIn().readLine();
+    }
+
+    private void startActivity(int choice) throws IOException {
+        switch (choice) {
             case 1:
-                // Fournir un nouveau service
+                // add new service
+                super.println("Choice " + choice + ": provide a new service##press a key to continue##");
+                super.getSockIn().readLine();
+
+                // todo (function start the service)
                 break;
             case 2:
                 // Mettre-à-jour un service
+                super.println("Choice " + choice + ": update a service##press a key to continue##");
+                super.getSockIn().readLine();
+
                 break;
             case 3:
                 // changement d’adresse FTP
+                changeProgrammerFtpUrl();
                 break;
             case 4:
                 // Démarrer/arrêter un service
@@ -77,45 +98,61 @@ public class ServiceProgrammer extends ServiceClient {
         return false;
     }
 
-    private void createAccount() throws IOException {
+    private boolean isFtpUrlCorrect (String ftpUrl){
+        try {
+            URLClassLoader.newInstance(new URL[] { new URL(ftpUrl)});
+            return true;
+        } catch (MalformedURLException e){
+            return false;
+        }
+    }
+
+    private boolean createAccount(String login, String pwd) throws IOException {
+        String ftpUrl = "";
+        while (!isFtpUrlCorrect(ftpUrl)){
+            super.println("Enter a correct FTP url (e.g ftp://localhost:2121/myDir/): ");
+            ftpUrl = super.getSockIn().readLine();
+        }
+
+        this.currentProgrammer = ServiceRegistry.addProgrammer(login, pwd, ftpUrl);
+
+        super.println("Account created, press to continue##");
+        super.getSockIn().readLine();
+
+        return true;
+    }
+
+    private boolean connectionToAccount(String login, String pwd) throws IOException {
+//        while (true) {
+            Programmer p = ServiceRegistry.getProgrammer(login, pwd);
+            if (p != null) {
+                super.println("You are now connected, press a key to continue##");
+                super.getSockIn().readLine();
+                this.currentProgrammer = p;
+
+                return true;
+            }
+            else {
+                super.println("Connection problem, press a key to retry##");
+                super.getSockIn().readLine();
+                System.out.println("in else");
+                return false;
+            }
+//        }
+
+    }
+
+    private boolean isAccountHandlerSuccess(int num) throws IOException {
         super.println("Enter your login: ");
         String login = super.getSockIn().readLine();
         super.println("Enter your password: ");
         String pwd = super.getSockIn().readLine();
 
-        ServiceRegistry.addProgrammer(login, pwd);
-
-        super.println("Account created, press to continue##");
-        super.getSockIn().readLine();
-    }
-
-    private void connectionToAccount() throws IOException {
-        while (true) {
-            super.println("Enter your login: ");
-            String login = super.getSockIn().readLine();
-            super.println("Enter your password: ");
-            String pwd = super.getSockIn().readLine();
-
-            Person p = ServiceRegistry.getProgrammer(login, pwd);
-            if (p != null) {
-                super.println("You are now connected, press a key to continue##");
-                this.currentProgrammer = p;
-                break;
-            }
-            else {
-                super.println("Connection problem, press a key to retry##");
-            }
-            super.getSockIn().readLine();
-        }
-
-    }
-
-    private void accountHandler(int num) throws IOException {
         if (num == 1){
-            connectionToAccount();
+            return connectionToAccount(login, pwd);
         }
         else {
-            createAccount();
+            return createAccount(login, pwd);
         }
     }
 
@@ -135,8 +172,10 @@ public class ServiceProgrammer extends ServiceClient {
             if (isSearchAccountActivities(msgCli)){
                 System.out.println("num Activity account: " + msgCli);
                 int num = Integer.parseInt(msgCli);
-                accountHandler(num);
-                break;
+                if (isAccountHandlerSuccess(num))
+                    break;
+                else
+                    super.println(sb.toString());
             }
             else {
                 super.println("You must enter a digit corresponding to one of the following service numbers: ");
@@ -145,9 +184,13 @@ public class ServiceProgrammer extends ServiceClient {
     }
 
     private void getNumActivityToLaunch() throws IOException {
+         if (this.currentProgrammer == null){
+            return;
+         }
+
         super.println(showActivities());
 
-        while (true) {
+         while (true) {
             String msgCli = super.getSockIn().readLine();
 
             if (msgCli.equals("quit")) {
@@ -156,10 +199,10 @@ public class ServiceProgrammer extends ServiceClient {
 
             if (isAnActivityNumber(msgCli)) {
                 System.out.println("num Activity: " + msgCli);
-                super.println("Vous avez choisi le service num: " + msgCli + "##");
+//                super.println("Vous avez choisi le service num: " + msgCli + "##");
                 int num = Integer.parseInt(msgCli);
-                // todo (start the activity)
-                break;
+                startActivity(num);
+                super.println(showActivities());
             } else {
                 super.println("You must enter a digit corresponding to one of the following service numbers: ");
             }
