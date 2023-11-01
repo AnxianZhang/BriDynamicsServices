@@ -16,6 +16,10 @@ public class Programmer implements Person{
         return hashedPwd;
     }
 
+    public String getLogin() {
+        return login;
+    }
+
     @Override
     public boolean isSamePwd(String pdwIn){
         return this.hashedPwd.equals(HashPassword.getHashPassword(pdwIn, this.salt));

@@ -8,14 +8,16 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 public class ServiceRegistry {
     private static List<Person> programmers;
-    private static ConcurrentHashMap<Person, List<? extends Service>> servicesClasses;
+    private static ConcurrentHashMap<Person, List<Class <? extends Service>>> servicesClasses;
 
 
     static {
@@ -85,24 +87,32 @@ public class ServiceRegistry {
         }
     }
 
-    // ajoute une classe de service après contrôle de la norme BRi
-//    public static void addService(Class<? extends Service> classToCharge) {
-//        // vérifier la conformité par introspection
-//        // si non conforme --> exception avec message clair
-//        // si conforme, ajout au vector
-//        try	{
-//            isValid(classToCharge);
-//            if (!servicesClasses.contains(classToCharge))
-//                servicesClasses.add(classToCharge);
-//        }catch (Exception e){
-//            System.out.println(e.getMessage());
-//        }
-//    }
+//     ajoute une classe de service après contrôle de la norme BRi
+    public static void addService(Programmer prog,  Class<? extends Service> classToCharge) {
+        List<Class<? extends Service>> services = servicesClasses.get(prog);
+        if (services == null) {
+            services = new Vector<>();
+            servicesClasses.put(prog, services);
+        }
+        try	{
+            isValid(classToCharge);
+            services.add(classToCharge);
+
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+    }
 
     // renvoie la classe de service (numService -1)
 //    public static Class<? extends Service> getServiceClass(int numService){
 //        return servicesClasses.get(numService -1);
 //    }
+
+    public static List<Class <? extends Service>> getAllServices(){
+        List<Class <? extends Service>> allServiceClasses = servicesClasses.values().stream()
+                .flatMap(List::stream).collect(Collectors.toList());
+        return allServiceClasses;
+    }
 
     public static void addProgrammer(String login, String pwd){
         programmers.add(new Programmer(login, pwd));

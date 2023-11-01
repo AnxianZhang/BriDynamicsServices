@@ -120,7 +120,7 @@ public class ServiceProgrammer extends ServiceClient {
     }
 
     private void searchAccount() throws IOException {
-        StringBuilder sb = new StringBuilder(""); // sb = 傻逼 嘿嘿黑
+        StringBuilder sb = new StringBuilder(""); // sb = 傻逼 嘿嘿嘿 >v<
         sb.append("1. Sign in##");
         sb.append("2. Sign up##");
         super.println(sb.toString());
