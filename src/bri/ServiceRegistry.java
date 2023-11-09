@@ -53,14 +53,14 @@ public class ServiceRegistry {
     }
 
     // ajoute une classe de service après contrôle de la norme BRi
-    public static void addService(Class<? extends Service> classToCharge, Programmer p) {
+    public static void addService(Class<?> classToCharge, Programmer p) {
         // vérifier la conformité par introspection
         // si non conforme --> exception avec message clair
         // si conforme, ajout au vector
         try	{
             isValid(classToCharge);
-            if (!servicesClasses.get(p).contains(classToCharge)){
-                servicesClasses.get(p).add(classToCharge);
+            if (!servicesClasses.get(p).contains(classToCharge.asSubclass(Service.class))){
+                servicesClasses.get(p).add(classToCharge.asSubclass(Service.class));
                 System.out.println("Ajout de la classe: " + classToCharge);
             }
         }catch (Exception e){

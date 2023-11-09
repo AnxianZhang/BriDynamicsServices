@@ -56,7 +56,7 @@ public class ServiceForProgrammer extends ServiceClient {
             * */
             Class<?> classToCharge = this.currentProgrammer.laodClass(className);
             System.out.println("pass");
-            ServiceRegistry.addService(classToCharge.asSubclass(Service.class), this.currentProgrammer);
+            ServiceRegistry.addService(classToCharge, this.currentProgrammer);
         } catch (ClassNotFoundException e) {
             super.println("The class: " + className + " isn't inside FTP server, press a key to retry");
             super.getSockIn().readLine();
