@@ -92,6 +92,29 @@ public class ServiceRegistry {
         return null;
     }
 
+    public static List<Class<? extends Service>> getListServicesOfProg(Programmer p){
+        if(servicesClasses.get(p)!= null)
+            return servicesClasses.get(p);
+        throw new RuntimeException("The programmer " + p.getLogin() + " does not have any service");
+    }
+
+    public static void updateService(Class<?> classToCharge, Programmer currentProgrammer) throws Exception {
+        List<Class<? extends Service>> serviceList = getListServicesOfProg(currentProgrammer);
+        isValid(classToCharge, currentProgrammer);
+        int index = serviceList.indexOf(classToCharge);
+        if (index != -1) {
+            // 如果找到了，替换现有的类
+            serviceList.set(index, classToCharge.asSubclass(Service.class));
+
+        } else {
+            // 如果没有找到，可以选择将新的类添加到列表中
+            serviceList.add(classToCharge.asSubclass(Service.class));
+        }
+
+        // 更新映射中的列表
+        servicesClasses.put(currentProgrammer, serviceList);
+    }
+
     // liste les activités présentes
 //    public static String toStringue() {
 //        StringBuilder result = new StringBuilder("Activités présentes :##");

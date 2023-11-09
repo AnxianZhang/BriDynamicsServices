@@ -16,7 +16,7 @@ public class ServiceAmateurs extends GeneralService {
 
     public ServiceAmateurs(Socket socketClient) throws IOException {
         super(socketClient);
-        allServiceClasses=ServiceRegistry.getAllServices();
+        //allServiceClasses=ServiceRegistry.getAllServices();
     }
 
     public String toStringue() {

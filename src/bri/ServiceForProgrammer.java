@@ -76,7 +76,18 @@ public class ServiceForProgrammer extends ServiceClient {
         /**
          * trouver une moyen de recharger une classe deja charger
          */
-        super.println("Choice ==> update a service##press a key to continue##");
+        super.println(ServiceRegistry.getListServicesOfProg(currentProgrammer).toString()+"##Enter the name of service you want to add: ");
+        String classToRecharge = super.getSockIn().readLine();
+
+        try {
+            Class<?> classToCharge = this.currentProgrammer.laodClass(classToRecharge);
+            ServiceRegistry.updateService(classToCharge, this.currentProgrammer);
+            return;
+        } catch (ClassNotFoundException e) {
+            super.println("The class: " + classToRecharge + " isn't inside FTP server, press a key to retry##");
+        } catch (Exception e){
+            super.println(e.getMessage() + " press a key to retry##");
+        }
         super.getSockIn().readLine();
     }
 
