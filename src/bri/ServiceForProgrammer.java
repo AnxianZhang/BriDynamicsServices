@@ -58,9 +58,9 @@ public class ServiceForProgrammer extends ServiceClient {
 
         try {
             /* on met pas Class <? extends Service> car si la classe implement pas il y aura une exception
-            * ClassNotFoundException qui va être lever, nous on veux que ça soit une new Exception
-            * de ServiceRegistry.addService qui soit lever
-            * */
+             * ClassNotFoundException qui va être lever, nous on veux que ça soit une new Exception
+             * de ServiceRegistry.addService qui soit lever
+             * */
             Class<?> classToCharge = this.currentProgrammer.laodClass(className);
             ServiceRegistry.addService(classToCharge, this.currentProgrammer);
             return;
@@ -178,19 +178,19 @@ public class ServiceForProgrammer extends ServiceClient {
 
     private boolean connectionToAccount(String login, String pwd) throws IOException {
 //        while (true) {
-            Programmer p = ServiceRegistry.getProgrammer(login, pwd);
-            if (p != null) {
-                super.println("You are now connected, press a key to continue##");
-                super.getSockIn().readLine();
-                this.currentProgrammer = p;
+        Programmer p = ServiceRegistry.getProgrammer(login, pwd);
+        if (p != null) {
+            super.println("You are now connected, press a key to continue##");
+            super.getSockIn().readLine();
+            this.currentProgrammer = p;
 
-                return true;
-            }
-            else {
-                super.println("Connection problem, press a key to retry##");
-                super.getSockIn().readLine();
-                return false;
-            }
+            return true;
+        }
+        else {
+            super.println("Connection problem, press a key to retry##");
+            super.getSockIn().readLine();
+            return false;
+        }
 //        }
 
     }
@@ -236,13 +236,13 @@ public class ServiceForProgrammer extends ServiceClient {
     }
 
     private void getNumActivityToLaunch() throws IOException {
-         if (this.currentProgrammer == null){
+        if (this.currentProgrammer == null){
             return;
-         }
+        }
 
         super.println(showActivities());
 
-         while (true) {
+        while (true) {
             String msgCli = super.getSockIn().readLine();
 
             if (msgCli.equals("quit")) {

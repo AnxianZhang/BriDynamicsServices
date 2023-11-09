@@ -1,7 +1,7 @@
 package app;
 
 import server.ServeurBRi;
-import bri.ServiceAmateurs;
+import bri.ServiceAmateur;
 import bri.ServiceForProgrammer;
 
 import java.io.IOException;
@@ -34,7 +34,7 @@ public class BriLaunch {
 //        new Thread(new server.ServeurBRi(AMATEUR_PORT)).start();
 
         ServeurBRi sProgrammer = new ServeurBRi(ServiceForProgrammer.class, PROGRAMMER_PORT);
-        ServeurBRi sAmateur = new ServeurBRi(ServiceAmateurs.class, AMATEUR_PORT);
+        ServeurBRi sAmateur = new ServeurBRi(ServiceAmateur.class, AMATEUR_PORT);
 
         Thread t1 = new Thread(sProgrammer);
         Thread t2 = new Thread(sAmateur);

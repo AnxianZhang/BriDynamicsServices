@@ -35,26 +35,26 @@ public abstract class ServiceClient extends GeneralService {
         return servicesClasses.get(numService - 1);
     }
 
-    public String toStringue() {
-        StringBuilder r = new StringBuilder();
-        r.append("Activités présentes :##");
-        //no /n car va supprimer les text apres /n(socket not allow)
-        int i= 1;
-        synchronized (servicesClasses) {
-            for (Class<? extends Runnable> s: servicesClasses) {
-                try {
-                    Method toStringue =s.getMethod("toStringue");
-                    String ts = (String) toStringue.invoke(s);
-                    r.append(i).append(" . ").append(ts).append("##");
-                    ++i;
-                } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        }
-        System.out.println(r.toString());
-        return r.toString();
-    }
+//    public String toStringue() {
+//        StringBuilder r = new StringBuilder();
+//        r.append("Activités présentes :##");
+//        //no /n car va supprimer les text apres /n(socket not allow)
+//        int i= 1;
+//        synchronized (servicesClasses) {
+//            for (Class<? extends Runnable> s: servicesClasses) {
+//                try {
+//                    Method toStringue =s.getMethod("toStringue");
+//                    String ts = (String) toStringue.invoke(s);
+//                    r.append(i).append(" . ").append(ts).append("##");
+//                    ++i;
+//                } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+//                    throw new RuntimeException(e);
+//                }
+//            }
+//        }
+//        System.out.println(r.toString());
+//        return r.toString();
+//    }
 
     private static void validationBRI(Class<?> classe) throws Exception {
         if (!Modifier.isPublic(classe.getModifiers()))

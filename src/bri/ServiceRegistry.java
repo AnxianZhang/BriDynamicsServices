@@ -4,15 +4,13 @@ import person.Person;
 import person.Programmer;
 import person.ProgrammerOfService;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
+import java.lang.reflect.*;
 import java.net.MalformedURLException;
 import java.net.Socket;
 import java.util.List;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 public class ServiceRegistry {
     private static List<Programmer> programmers;
@@ -67,9 +65,9 @@ public class ServiceRegistry {
     }
     
     // renvoie la classe de service (numService -1)
-//    public static Class<? extends Service> getServiceClass(int numService){
-//        return servicesClasses.get(numService -1);
-//    }
+    public static Class<? extends Service> getServiceClass(int numService){
+        return getAllServices().get(numService -1);
+    }
 
     public static Programmer addProgrammer(String login, String pwd, String ftpUrl) throws MalformedURLException, Exception {
         Programmer p = new ProgrammerOfService(login, pwd, ftpUrl);
@@ -115,34 +113,44 @@ public class ServiceRegistry {
         servicesClasses.put(currentProgrammer, serviceList);
     }
 
+    public static List<Class <? extends Service>> getAllServices(){
+        List<Class <? extends Service>> allServiceClasses = servicesClasses.values().stream()
+                .flatMap(List::stream).collect(Collectors.toList());
+        return allServiceClasses;
+    }
+
+    public static int getServicesSize(){
+        return getAllServices() == null ? 0 : getAllServices().size();
+    }
+
     // liste les activités présentes
-//    public static String toStringue() {
-//        StringBuilder result = new StringBuilder("Activités présentes :##");
-//        // todo
-//        int i = 1;
-//        synchronized (servicesClasses) {
-//            for (Class<? extends Service> c : servicesClasses) {
-//                try	{
-//					/*
-//					va chercher la méthode toStringue de la classe qui implement
-//					Service (ON VEUT LA CLASSE DE SERVICE). On ne fait pas c.toString car sinon il prendra la méthode
-//					tostring de la classe Class
-//					* */
-//                    Method toStringue = c.getMethod("toStringue");
-//                    String s = (String) toStringue.invoke(c); // on met "c" en param car c'est l'objet recepteur qui possède la méthode toStringue (on peut aussi passer des param, mais la on ne le fait pas car toStringue na pas de param)
-//                    result.append(i).append(s).append("##");
-//                    ++i;
-//                } catch (InvocationTargetException e) {
-//                    throw new RuntimeException(e);
-//                } catch (NoSuchMethodException e) {
-//                    throw new RuntimeException(e);
-//                } catch (IllegalAccessException e) {
-//                    throw new RuntimeException(e);
-//                }
-//            }
-//
-//        }
-//        return result.toString();
-//    }
+    public static String toStringue() {
+        StringBuilder result = new StringBuilder("Available activity:##");
+        // todo
+        int i = 1;
+        synchronized (servicesClasses) {
+            for (Class<? extends Service> c : getAllServices()) {
+                try	{
+					/*
+					va chercher la méthode toStringue de la classe qui implement
+					Service (ON VEUT LA CLASSE DE SERVICE). On ne fait pas c.toString car sinon il prendra la méthode
+					tostring de la classe Class
+					* */
+                    Method toStringue = c.getMethod("toStringue");
+                    String s = (String) toStringue.invoke(c); // on met "c" en param car c'est l'objet recepteur qui possède la méthode toStringue (on peut aussi passer des param, mais la on ne le fait pas car toStringue na pas de param)
+                    result.append(i).append(". ").append(s).append("##");
+                    ++i;
+                } catch (InvocationTargetException e) {
+                    throw new RuntimeException(e);
+                } catch (NoSuchMethodException e) {
+                    throw new RuntimeException(e);
+                } catch (IllegalAccessException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+        }
+        return result.toString();
+    }
 
 }
