@@ -1,4 +1,4 @@
-package service;
+package bri;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -6,7 +6,7 @@ import java.lang.reflect.Method;
 import java.net.Socket;
 import java.util.List;
 
-public class ServiceAmateurs extends ServiceClient {
+public class ServiceAmateurs extends GeneralService {
 //    private static List<Class<? extends service.Service>> servicesClasses;
 //    static {
 //        servicesClasses = new Vector<>();
