@@ -3,9 +3,11 @@ package person;
 import bri.Service;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.Objects;
 
 public class ProgrammerOfService implements Programmer{
     private String login;
@@ -22,26 +24,6 @@ public class ProgrammerOfService implements Programmer{
         this.hashedPwd = HashPassword.getHashPassword(pwd, this.salt);
         this.ftpUrl = ftpUrl;
         this.serviceLoader = URLClassLoader.newInstance(new URL[] { new URL(ftpUrl)});
-
-//        try {
-//            // ?
-//            System.out.println(this.serviceLoader.loadClass("examples.Bonjour"));
-//
-//            // ???
-//            System.out.println(this.serviceLoader.loadClass("examples.ServiceSese"));
-//        } catch (ClassNotFoundException e) {
-//            throw new RuntimeException(e);
-//        }
-    }
-
-    public boolean isFtpUrlCorrect (String ftpUrl){
-        try {
-            this.ftpUrl = ftpUrl;
-            this.serviceLoader = URLClassLoader.newInstance(new URL[] { new URL(ftpUrl)});
-            return true;
-        } catch (MalformedURLException e){
-            return false;
-        }
     }
 
     public void setFtpUrl(String newFtpUl){
@@ -58,17 +40,31 @@ public class ProgrammerOfService implements Programmer{
         return this.serviceLoader.loadClass(className);
     }
 
-    public String getHashedPwd() {
-        return hashedPwd;
-    }
-
     @Override
     public boolean isSamePwd(String pdwIn){
         return this.hashedPwd.equals(HashPassword.getHashPassword(pdwIn, this.salt));
     }
 
     @Override
+    public String getLogin() {
+        return this.login;
+    }
+
+    @Override
     public boolean isSameLogin(String login){
         return this.login.equals(login);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ProgrammerOfService that = (ProgrammerOfService) o;
+        return Objects.equals(login, that.login);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(login);
     }
 }

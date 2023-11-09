@@ -24,47 +24,45 @@ public class ServiceRegistry {
         servicesClasses = new ConcurrentHashMap<>();
     }
 
-    private static void isValid(Class<?> classe) throws Exception {
+    private static void isValid(Class<?> classe, Programmer p) throws Exception {
+        if(!classe.getPackage().toString().equals("package " + p.getLogin()))
+            throw new Exception("The class must be in a package with your login name");
         if (!Modifier.isPublic(classe.getModifiers()))
-            throw new Exception("La classe doit être publique");
+            throw new Exception("The class must be public");
         if (Modifier.isAbstract(classe.getModifiers()))
-            throw new Exception("La classe ne doit pas être abstract");
+            throw new Exception("The class must not be abstract");
         if (!Service.class.isAssignableFrom(classe))
-            throw new Exception("La classe doit implémenter bri.Service");
+            throw new Exception("The class must implement bri.Service");
         try {
             Constructor<?> constructor = classe.getConstructor(Socket.class);
             if (!Modifier.isPublic(constructor.getModifiers()) || constructor.getExceptionTypes().length != 0) {
-                throw new Exception("La classe doit posséder un constructeur public (Socket) sans exception");
+                throw new Exception("The class must have a public constructor without exception with a Socket parameter");
             }
         } catch (Exception e) {
-            throw new Exception("La classe doit posséder un constructeur public (Socket) sans exception");
+            throw new Exception("The class must have a public constructor without exception with a Socket parameter");
         }
         Field[] fields = classe.getDeclaredFields();
         for (Field field : fields) {
             if (field.getType() != Socket.class||!Modifier.isPrivate(field.getModifiers()) || !Modifier.isFinal(field.getModifiers()))
-                throw new Exception("La classe doit avoir un attribut Socket private final");
+                throw new Exception("The class must have a Socket attribute private final");
         }
         Method method = classe.getDeclaredMethod("toStringue");
         if (!Modifier.isPublic(method.getModifiers())||
                 !Modifier.isStatic(method.getModifiers())||
                 method.getReturnType() != String.class||
                 method.getExceptionTypes().length != 0)
-            throw new Exception("La classe doit avoir une méthode public static String toStringue() sans exception");
+            throw new Exception("The class must have a public static String toStringue() method with no exceptions");
     }
 
     // ajoute une classe de service après contrôle de la norme BRi
-    public static void addService(Class<?> classToCharge, Programmer p) {
+    public static void addService(Class<?> classToCharge, Programmer p) throws Exception {
         // vérifier la conformité par introspection
         // si non conforme --> exception avec message clair
         // si conforme, ajout au vector
-        try	{
-            isValid(classToCharge);
-            if (!servicesClasses.get(p).contains(classToCharge.asSubclass(Service.class))){
-                servicesClasses.get(p).add(classToCharge.asSubclass(Service.class));
-                System.out.println("Ajout de la classe: " + classToCharge);
-            }
-        }catch (Exception e){
-            System.out.println(e.getMessage());
+        isValid(classToCharge, p);
+        if (!servicesClasses.get(p).contains(classToCharge.asSubclass(Service.class))){
+            servicesClasses.get(p).add(classToCharge.asSubclass(Service.class));
+            System.out.println("Class: " + classToCharge + " added by the programmer " + p.getLogin());
         }
     }
     
@@ -73,8 +71,11 @@ public class ServiceRegistry {
 //        return servicesClasses.get(numService -1);
 //    }
 
-    public static Programmer addProgrammer(String login, String pwd, String ftpUrl) throws MalformedURLException {
+    public static Programmer addProgrammer(String login, String pwd, String ftpUrl) throws MalformedURLException, Exception {
         Programmer p = new ProgrammerOfService(login, pwd, ftpUrl);
+
+        if (programmers.contains(p))
+            throw new Exception("This login is already used");
 
         programmers.add(p);
         servicesClasses.put(programmers.get(programmers.size() - 1), new Vector<>());
@@ -84,7 +85,7 @@ public class ServiceRegistry {
 
     public static Programmer getProgrammer (String login, String pwd){
         for (Programmer p: programmers){
-            if (p.isSameLogin(login) && p.isSameLogin(pwd)){
+            if (p.isSameLogin(login) && p.isSamePwd(pwd)){
                 return p;
             }
         }

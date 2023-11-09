@@ -49,25 +49,44 @@ public class ServiceForProgrammer extends ServiceClient {
         // ftp://localhost:2121/classes/
         // ftp://localhost:2121/filesErr/
 
+        /**
+         * ========== /!\ ==========
+         * ftp://localhost:2121/filesErr/ != ftp://localhost:2121/filesErr
+         * avec / -> l'url classloader pointera vers un DIR et le chargement se fait depuis le FICHIER LUI MEME
+         * sans / -> il pointe aussi vers le DIR mais il va charger tout le contenu du fichier .jar
+         */
+
         try {
             /* on met pas Class <? extends Service> car si la classe implement pas il y aura une exception
             * ClassNotFoundException qui va être lever, nous on veux que ça soit une new Exception
             * de ServiceRegistry.addService qui soit lever
             * */
             Class<?> classToCharge = this.currentProgrammer.laodClass(className);
-            System.out.println("pass");
             ServiceRegistry.addService(classToCharge, this.currentProgrammer);
+            return;
         } catch (ClassNotFoundException e) {
-            super.println("The class: " + className + " isn't inside FTP server, press a key to retry");
-            super.getSockIn().readLine();
+            super.println("The class: " + className + " isn't inside FTP server, press a key to retry##");
         } catch (Exception e){
-            super.println(e.getMessage());
+            super.println(e.getMessage() + " press a key to retry##");
         }
+        super.getSockIn().readLine();
+    }
+
+    private void updateService() throws IOException {
+        /**
+         * trouver une moyen de recharger une classe deja charger
+         */
+        super.println("Choice ==> update a service##press a key to continue##");
+        super.getSockIn().readLine();
     }
 
     private void startActivity(int choice) throws IOException {
         switch (choice) {
             case 1:
+                /**
+                 * URLClassLoader garde en memoire les classes charger, donc meme si on supp la class du dossier
+                 * la classe continue d'exister dans la memoire du JVM tant qu'elle est reférencer dans le code
+                 */
 //                super.println("Enter the service you want to add: ");
 //                String className = super.getSockIn().readLine();
                 // add new service
@@ -75,9 +94,7 @@ public class ServiceForProgrammer extends ServiceClient {
                 break;
             case 2:
                 // Mettre-à-jour un service
-                super.println("Choice " + choice + ": update a service##press a key to continue##");
-                super.getSockIn().readLine();
-
+                updateService();
                 break;
             case 3:
                 // Change of address
@@ -135,12 +152,17 @@ public class ServiceForProgrammer extends ServiceClient {
             ftpUrl = super.getSockIn().readLine();
         }
 
-        this.currentProgrammer = ServiceRegistry.addProgrammer(login, pwd, ftpUrl);
+        try {
+            this.currentProgrammer = ServiceRegistry.addProgrammer(login, pwd, ftpUrl);
 
-        super.println("Account created, press to continue##");
-        super.getSockIn().readLine();
-
-        return true;
+            super.println("Account created, press to continue##");
+            super.getSockIn().readLine();
+            return true;
+        }catch (Exception e) {
+            super.println(e.getMessage() + " press a key to retry##");
+            super.getSockIn().readLine();
+            return false;
+        }
     }
 
     private boolean connectionToAccount(String login, String pwd) throws IOException {
@@ -190,7 +212,6 @@ public class ServiceForProgrammer extends ServiceClient {
             }
 
             if (isSearchAccountActivities(msgCli)){
-                System.out.println("num Activity account: " + msgCli);
                 int num = Integer.parseInt(msgCli);
                 if (isAccountHandlerSuccess(num))
                     break;
@@ -218,8 +239,6 @@ public class ServiceForProgrammer extends ServiceClient {
             }
 
             if (isAnActivityNumber(msgCli)) {
-                System.out.println("num Activity: " + msgCli);
-//                super.println("Vous avez choisi le service num: " + msgCli + "##");
                 int num = Integer.parseInt(msgCli);
                 startActivity(num);
                 super.println(showActivities());
