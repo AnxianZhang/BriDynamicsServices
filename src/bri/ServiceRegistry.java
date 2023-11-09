@@ -90,27 +90,26 @@ public class ServiceRegistry {
         return null;
     }
 
-    public static List<Class<? extends Service>> getListServicesOfProg(Programmer p){
-        if(servicesClasses.get(p)!= null)
+    public static List<Class<? extends Service>> getListServicesOfProg(Programmer p) throws Exception{
+        if(!servicesClasses.get(p).isEmpty())
             return servicesClasses.get(p);
-        throw new RuntimeException("The programmer " + p.getLogin() + " does not have any service");
+        throw new Exception("You don't have added any services, so you can't make update");
     }
 
     public static void updateService(Class<?> classToCharge, Programmer currentProgrammer) throws Exception {
-        List<Class<? extends Service>> serviceList = getListServicesOfProg(currentProgrammer);
         isValid(classToCharge, currentProgrammer);
-        int index = serviceList.indexOf(classToCharge);
-        if (index != -1) {
-            // 如果找到了，替换现有的类
-            serviceList.set(index, classToCharge.asSubclass(Service.class));
 
-        } else {
-            // 如果没有找到，可以选择将新的类添加到列表中
-            serviceList.add(classToCharge.asSubclass(Service.class));
+        List<Class<? extends Service>> serviceList = getListServicesOfProg(currentProgrammer);
+
+        for (int i = 0; i < serviceList.size(); ++i){
+            if (serviceList.get(i).toString().equals(classToCharge.toString())){
+                serviceList.set(i, classToCharge.asSubclass(Service.class));
+                servicesClasses.put(currentProgrammer, serviceList);
+                return;
+            }
         }
 
-        // 更新映射中的列表
-        servicesClasses.put(currentProgrammer, serviceList);
+        throw new Exception("This class isn't in the array");
     }
 
     public static List<Class <? extends Service>> getAllServices(){

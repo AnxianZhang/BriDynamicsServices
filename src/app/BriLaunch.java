@@ -20,12 +20,6 @@ public class BriLaunch {
     }
 
     public static void main(String[] args) throws IOException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
-        Scanner clavier = new Scanner(System.in);
-        String fileNameURL = "ftp://localhost:2121/";
-
-        URLClassLoader urlcl = URLClassLoader.newInstance(new URL[] { new URL(fileNameURL)});
-
-        System.out.println("Bienvenue dans votre gestionnaire dynamique d'activité BRi");
 //        System.out.println("Pour ajouter une activité, celle-ci doit être présente sur votre serveur ftp");
 //        System.out.println("A tout instant, en tapant le nom de la classe, vous pouvez l'intégrer");
 //        System.out.println("Les clients se connectent au serveur 3000 pour lancer une activité");

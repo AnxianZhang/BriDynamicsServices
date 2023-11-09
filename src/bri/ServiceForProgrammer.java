@@ -33,7 +33,7 @@ public class ServiceForProgrammer extends ServiceClient {
     private void changeProgrammerFtpUrl() throws IOException {
         String newUrl = "";
         while (!isFtpUrlCorrect(newUrl)) {
-            super.println("Enter a correct new FTP ulr: ");
+            super.println("Enter a correct new FTP ulr (e.g ftp://localhost:2121/myDir/): ");
             newUrl = super.getSockIn().readLine();
         }
 
@@ -73,20 +73,17 @@ public class ServiceForProgrammer extends ServiceClient {
     }
 
     private void updateService() throws IOException {
-        /**
-         * trouver une moyen de recharger une classe deja charger
-         */
-        super.println(ServiceRegistry.getListServicesOfProg(currentProgrammer).toString()+"##Enter the name of service you want to add: ");
-        String classToRecharge = super.getSockIn().readLine();
-
+        String classToRecharge = "";
         try {
+            super.println(ServiceRegistry.getListServicesOfProg(currentProgrammer).toString() + "##Enter the class name of service you want to update: ");
+            classToRecharge = super.getSockIn().readLine();
             Class<?> classToCharge = this.currentProgrammer.laodClass(classToRecharge);
             ServiceRegistry.updateService(classToCharge, this.currentProgrammer);
             return;
         } catch (ClassNotFoundException e) {
             super.println("The class: " + classToRecharge + " isn't inside FTP server, press a key to retry##");
-        } catch (Exception e){
-            super.println(e.getMessage() + " press a key to retry##");
+        } catch (Exception e) {
+            super.println(e.getMessage() + "##Press a key to retry##");
         }
         super.getSockIn().readLine();
     }

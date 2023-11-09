@@ -22,17 +22,22 @@ public class ProgrammerOfService implements Programmer{
         this.serviceLoader = URLClassLoader.newInstance(new URL[] { new URL(ftpUrl)});
     }
 
+    private void refreshURLClassLoader() throws MalformedURLException {
+        this.serviceLoader = URLClassLoader.newInstance(new URL[] { new URL(this.ftpUrl)});
+    }
+
     public void setFtpUrl(String newFtpUl){
         this.ftpUrl = newFtpUl;
         try{
-            this.serviceLoader = URLClassLoader.newInstance(new URL[] { new URL(this.ftpUrl)});
+            refreshURLClassLoader();
             System.out.println(this.serviceLoader);
         } catch (MalformedURLException e){
             /* tested in ServiceForProgrammer */
         }
     }
 
-    public Class<?> laodClass(String className) throws ClassNotFoundException {
+    public Class<?> laodClass(String className) throws ClassNotFoundException, MalformedURLException {
+        this.refreshURLClassLoader();
         return this.serviceLoader.loadClass(className);
     }
 
