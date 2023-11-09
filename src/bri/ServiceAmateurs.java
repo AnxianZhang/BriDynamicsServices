@@ -1,9 +1,9 @@
-package service;
+package bri;
 
 import java.io.IOException;
 import java.net.Socket;
 
-public class ServiceAmateurs extends Service {
+public class ServiceAmateurs extends GeneralService {
 //    private static List<Class<? extends service.Service>> servicesClasses;
 //    static {
 //        servicesClasses = new Vector<>();

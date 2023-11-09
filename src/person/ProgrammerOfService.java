@@ -1,5 +1,8 @@
 package person;
 
+import bri.Service;
+
+import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -19,6 +22,16 @@ public class ProgrammerOfService implements Programmer{
         this.hashedPwd = HashPassword.getHashPassword(pwd, this.salt);
         this.ftpUrl = ftpUrl;
         this.serviceLoader = URLClassLoader.newInstance(new URL[] { new URL(ftpUrl)});
+
+//        try {
+//            // ?
+//            System.out.println(this.serviceLoader.loadClass("examples.Bonjour"));
+//
+//            // ???
+//            System.out.println(this.serviceLoader.loadClass("examples.ServiceSese"));
+//        } catch (ClassNotFoundException e) {
+//            throw new RuntimeException(e);
+//        }
     }
 
     public boolean isFtpUrlCorrect (String ftpUrl){
@@ -39,6 +52,10 @@ public class ProgrammerOfService implements Programmer{
         } catch (MalformedURLException e){
             /* tested in ServiceForProgrammer */
         }
+    }
+
+    public Class<?> laodClass(String className) throws ClassNotFoundException {
+        return this.serviceLoader.loadClass(className);
     }
 
     public String getHashedPwd() {

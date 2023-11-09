@@ -1,6 +1,6 @@
 package server;
 
-import service.Service;
+import bri.GeneralService;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -9,9 +9,9 @@ import java.net.Socket;
 
 public class ServeurBRi implements Runnable {
     private final int NUM_PORT;
-    private final Class<? extends Service> service;
+    private final Class<? extends GeneralService> service;
     private final ServerSocket myServer;
-    public ServeurBRi(Class<? extends Service> service, int port) throws IOException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+    public ServeurBRi(Class<? extends GeneralService> service, int port) throws IOException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
 //        try {
 //            myServer = new ServerSocket(port);
 //        } catch (IOException e) {

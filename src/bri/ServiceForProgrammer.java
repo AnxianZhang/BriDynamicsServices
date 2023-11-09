@@ -1,6 +1,5 @@
-package service;
+package bri;
 
-import person.Person;
 import person.Programmer;
 
 import java.io.IOException;
@@ -43,14 +42,36 @@ public class ServiceForProgrammer extends ServiceClient {
         super.getSockIn().readLine();
     }
 
+    private void addNewService () throws IOException {
+        super.println("Enter the service you want to add: ");
+        String className = super.getSockIn().readLine();
+
+        // ftp://localhost:2121/classes/
+        // ftp://localhost:2121/filesErr/
+
+        try {
+            /* on met pas Class <? extends Service> car si la classe implement pas il y aura une exception
+            * ClassNotFoundException qui va être lever, nous on veux que ça soit une new Exception
+            * de ServiceRegistry.addService qui soit lever
+            * */
+            Class<?> classToCharge = this.currentProgrammer.laodClass(className);
+            System.out.println("pass");
+            ServiceRegistry.addService(classToCharge.asSubclass(Service.class), this.currentProgrammer);
+        } catch (ClassNotFoundException e) {
+            super.println("The class: " + className + " isn't inside FTP server, press a key to retry");
+            super.getSockIn().readLine();
+        } catch (Exception e){
+            super.println(e.getMessage());
+        }
+    }
+
     private void startActivity(int choice) throws IOException {
         switch (choice) {
             case 1:
+//                super.println("Enter the service you want to add: ");
+//                String className = super.getSockIn().readLine();
                 // add new service
-                super.println("Choice " + choice + ": provide a new service##press a key to continue##");
-                super.getSockIn().readLine();
-
-                // todo (function start the service)
+                addNewService();
                 break;
             case 2:
                 // Mettre-à-jour un service
@@ -59,7 +80,7 @@ public class ServiceForProgrammer extends ServiceClient {
 
                 break;
             case 3:
-                // changement d’adresse FTP
+                // Change of address
                 changeProgrammerFtpUrl();
                 break;
             case 4:
@@ -135,7 +156,6 @@ public class ServiceForProgrammer extends ServiceClient {
             else {
                 super.println("Connection problem, press a key to retry##");
                 super.getSockIn().readLine();
-                System.out.println("in else");
                 return false;
             }
 //        }

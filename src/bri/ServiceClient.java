@@ -1,6 +1,4 @@
-package service;
-
-import service.Service;
+package bri;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -9,7 +7,7 @@ import java.net.Socket;
 import java.util.List;
 import java.util.Vector;
 
-public abstract class ServiceClient extends Service{
+public abstract class ServiceClient extends GeneralService {
     private static List<Class<? extends Runnable>> servicesClasses;
     static {
         servicesClasses = new Vector<>();
@@ -19,7 +17,7 @@ public abstract class ServiceClient extends Service{
         super(socketClient);
     }
 
-    public static void addService(Class<? extends Service> newServiceClass) {
+    public static void addService(Class<? extends GeneralService> newServiceClass) {
         // vérifier la conformité par introspection
         try {
             validationBRI(newServiceClass);
@@ -63,7 +61,7 @@ public abstract class ServiceClient extends Service{
             throw new Exception("La classe doit être publique");
         if (Modifier.isAbstract(classe.getModifiers()))
             throw new Exception("La classe ne doit pas être abstract");
-        if (!Service.class.isAssignableFrom(classe))
+        if (!GeneralService.class.isAssignableFrom(classe))
             throw new Exception("La classe doit implémenter service.Service");
         try {
             Constructor<?> constructor = classe.getConstructor(Socket.class);
