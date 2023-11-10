@@ -18,6 +18,9 @@ public abstract class ServiceClient extends GeneralService {
 
     protected abstract boolean isAnActivityNumberInterval(int num);
 
+    protected void timeOutMsg() {
+        System.out.println("Time out of: " + super.getSocketClient().getInetAddress());
+    }
 
     protected boolean isDigit(String s) {
         try {
@@ -67,7 +70,6 @@ public abstract class ServiceClient extends GeneralService {
             System.out.println();
         } catch (IOException e) {
             System.out.println("Problem when closing socket in ServiceClient");
-            ;
         }
     }
 }

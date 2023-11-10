@@ -56,7 +56,7 @@ public class ServiceAmateur extends ServiceClient {
         try {
             super.numActivityToLaunch();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            super.timeOutMsg();
         } finally {
             super.closeSocketClient();
         }

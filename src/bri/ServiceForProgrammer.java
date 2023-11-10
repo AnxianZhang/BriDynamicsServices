@@ -179,7 +179,7 @@ public class ServiceForProgrammer extends ServiceClient {
             searchAccount();
             super.numActivityToLaunch();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            super.timeOutMsg();
         } finally {
             super.closeSocketClient();
         }
