@@ -1,5 +1,6 @@
 package bri;
 
+import bri.service.Service;
 import person.ProgrammerOfService;
 
 import java.lang.reflect.*;
@@ -30,7 +31,7 @@ public class ServiceRegistry {
         if (Modifier.isAbstract(classe.getModifiers()))
             throw new Exception("The class must not be abstract");
         if (!Service.class.isAssignableFrom(classe))
-            throw new Exception("The class must implement bri.Service");
+            throw new Exception("The class must implement bri.service.Service");
         try {
             Constructor<?> constructor = classe.getConstructor(Socket.class);
             if (!Modifier.isPublic(constructor.getModifiers()) || constructor.getExceptionTypes().length != 0) {

@@ -1,4 +1,4 @@
-package bri.service_action;
+package bri.service.service_action;
 
 import bri.ServiceRegistry;
 import bri.Programmer;

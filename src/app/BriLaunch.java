@@ -1,8 +1,8 @@
 package app;
 
-import server.ServerBRi;
-import bri.ServiceAmateur;
-import bri.ServiceForProgrammer;
+import bri.ServerBRi;
+import bri.service.ServiceAmateur;
+import bri.service.ServiceForProgrammer;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;

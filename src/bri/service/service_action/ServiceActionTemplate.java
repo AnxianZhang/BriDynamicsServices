@@ -1,18 +1,20 @@
-package bri.service_action;
+package bri.service.service_action;
 
-import bri.ServiceAction;
+import bri.ReceptionTimeOut;
+import bri.service.ServiceAction;
 import bri.Programmer;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.Socket;
 
 public abstract class ServiceActionTemplate implements ServiceAction {
-    public void performServiceAction(Programmer p, PrintWriter pSocketOut, BufferedReader pSocketIn) throws IOException {
+    public void performServiceAction(Programmer p, PrintWriter pSocketOut, BufferedReader pSocketIn, Socket s) throws IOException {
         String className = "";
         try {
             pSocketOut.println(promptMessage(p));
-            className = pSocketIn.readLine();
+            className = ReceptionTimeOut.receive(pSocketIn, s);
             Class<?> classToCharge = p.loadClass(className);
             // it's in addService that we cast Class<?> to Class<? extends Service> with .asSubclass
             handleAction(classToCharge, p);
@@ -22,7 +24,7 @@ public abstract class ServiceActionTemplate implements ServiceAction {
         } catch (Exception e) {
             pSocketOut.println(e.getMessage() + " press a key to retry##");
         }
-        pSocketIn.readLine();
+        ReceptionTimeOut.receive(pSocketIn, s);
     }
 
     protected abstract String promptMessage(Programmer p) throws Exception;

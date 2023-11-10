@@ -1,4 +1,7 @@
-package bri;
+package bri.service;
+
+import bri.ReceptionTimeOut;
+import bri.ServiceRegistry;
 
 import java.io.IOException;
 import java.lang.reflect.Constructor;
@@ -29,7 +32,7 @@ public class ServiceAmateur extends ServiceClient {
     @Override
     protected void numActivityToLaunchPreconditionMessage() throws IOException {
         super.getSockOut().println("No services are now available, enter 'quit' to finish process##");
-        super.getSockIn().readLine();
+        ReceptionTimeOut.receive(super.getSockIn(), super.getSocketClient());
     }
 
     @Override
@@ -40,7 +43,7 @@ public class ServiceAmateur extends ServiceClient {
     @Override
     protected void startTheSpecificActivity(int num) throws IOException {
         launchActivity(num);
-        super.getSockIn().readLine();
+        ReceptionTimeOut.receive(super.getSockIn(), super.getSocketClient());
         super.getSockOut().println(ServiceRegistry.toStringue());
     }
 
@@ -56,7 +59,7 @@ public class ServiceAmateur extends ServiceClient {
         try {
             super.numActivityToLaunch();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            super.timeOutMsg();
         } finally {
             super.closeSocketClient();
         }
