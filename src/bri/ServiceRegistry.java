@@ -54,10 +54,11 @@ public class ServiceRegistry {
 
     public static void addService(Class<?> classToCharge, Programmer p) throws Exception {
         isValid(classToCharge, p);
-        if (!servicesClasses.get(p).contains(classToCharge.asSubclass(Service.class))) {
-            servicesClasses.get(p).add(classToCharge.asSubclass(Service.class));
-            System.out.println("Class: " + classToCharge + " added by the programmer " + p.getLogin());
-        }
+//        if (!servicesClasses.get(p).contains(classToCharge.asSubclass(Service.class))) {
+//            servicesClasses.get(p).add(classToCharge.asSubclass(Service.class));
+//            System.out.println("Class: " + classToCharge + " added by the programmer " + p.getLogin());
+//        }
+
     }
 
     public static Class<? extends Service> getServiceClass(int numService) {
