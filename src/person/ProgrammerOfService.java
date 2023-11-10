@@ -1,20 +1,21 @@
 package person;
 
 import bri.Programmer;
+import bri.Service;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.HashMap;
 import java.util.Objects;
 
 public class ProgrammerOfService implements Programmer {
     private final String login;
     private final String hashedPwd;
     private String ftpUrl;
-
     private URLClassLoader serviceLoader;
-
     private final byte [] salt;
+    private final HashMap<Class<? extends Service>, Boolean> services;
 
     public ProgrammerOfService(String login, String pwd, String ftpUrl) throws MalformedURLException {
         this.login = login;
@@ -22,6 +23,7 @@ public class ProgrammerOfService implements Programmer {
         this.hashedPwd = HashPassword.getHashPassword(pwd, this.salt);
         this.ftpUrl = ftpUrl;
         this.serviceLoader = URLClassLoader.newInstance(new URL[] { new URL(ftpUrl)});
+        this.services = new HashMap<>();
     }
 
     private void refreshURLClassLoader() throws MalformedURLException {
@@ -38,9 +40,15 @@ public class ProgrammerOfService implements Programmer {
         }
     }
 
-    public Class<?> laodClass(String className) throws ClassNotFoundException, MalformedURLException {
+    public Class<?> loadClass(String className) throws ClassNotFoundException, MalformedURLException {
         this.refreshURLClassLoader();
         return this.serviceLoader.loadClass(className);
+    }
+
+    @Override
+    public boolean containClassToCharge(Class<? extends Service> myClass) {
+//        return this.services.;
+        return false;
     }
 
     @Override
