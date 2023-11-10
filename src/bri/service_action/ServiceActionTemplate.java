@@ -13,7 +13,7 @@ public abstract class ServiceActionTemplate implements ServiceAction {
         try {
             pSocketOut.println(promptMessage(p));
             className = pSocketIn.readLine();
-            Class<?> classToCharge = p.laodClass(className);
+            Class<?> classToCharge = p.loadClass(className);
             // it's in addService that we cast Class<?> to Class<? extends Service> with .asSubclass
             handleAction(classToCharge, p);
             pSocketOut.println(serviceActionMessage(classToCharge));

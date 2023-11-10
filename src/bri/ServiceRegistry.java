@@ -52,12 +52,25 @@ public class ServiceRegistry {
             throw new Exception("The class must have a public static String toStringue() method with no exceptions");
     }
 
+    private static boolean containClass(Class<?> c, Programmer p){
+        synchronized (servicesClasses){
+            for (int i = 0; i < servicesClasses.get(p).size(); ++i){
+                if (servicesClasses.get(p).get(i).toString().equals(c.toString())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     public static void addService(Class<?> classToCharge, Programmer p) throws Exception {
         isValid(classToCharge, p);
-        if (!servicesClasses.get(p).contains(classToCharge.asSubclass(Service.class))) {
+        if (!containClass(classToCharge, p)) {
             servicesClasses.get(p).add(classToCharge.asSubclass(Service.class));
             System.out.println("Class: " + classToCharge + " added by the programmer " + p.getLogin());
+            return;
         }
+        throw new Exception ("This class is already added");
     }
 
     public static Class<? extends Service> getServiceClass(int numService) {
@@ -96,11 +109,13 @@ public class ServiceRegistry {
 
         List<Class<? extends Service>> serviceList = getListServicesOfProg(currentProgrammer);
 
-        for (int i = 0; i < serviceList.size(); ++i) {
-            if (serviceList.get(i).toString().equals(classToCharge.toString())) {
-                serviceList.set(i, classToCharge.asSubclass(Service.class));
-                servicesClasses.put(currentProgrammer, serviceList);
-                return;
+        synchronized (servicesClasses){
+            for (int i = 0; i < serviceList.size(); ++i) {
+                if (serviceList.get(i).toString().equals(classToCharge.toString())) {
+                    serviceList.set(i, classToCharge.asSubclass(Service.class));
+                    servicesClasses.put(currentProgrammer, serviceList);
+                    return;
+                }
             }
         }
         throw new Exception("This class isn't in the array");
