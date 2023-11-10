@@ -1,4 +1,4 @@
-package bri;
+package bri.service;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -48,7 +48,7 @@ public abstract class ServiceClient extends GeneralService {
         showAllPossibleActivities();
 
         while (true) {
-            String msgCli = super.getSockIn().readLine();
+            String msgCli = ReceptionTimeOut.receive(super.getSockIn(), super.getSocketClient());
 
             if (msgCli.equals("quit")) {
                 break;

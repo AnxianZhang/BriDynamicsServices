@@ -1,7 +1,7 @@
-package bri;
+package bri.service;
 
-import bri.service_action.AddServiceAction;
-import bri.service_action.UpdateServiceAction;
+import bri.Programmer;
+import bri.ServiceRegistry;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -29,23 +29,50 @@ public class ServiceForProgrammer extends ServiceClient {
         String newUrl = "";
         while (!isFtpUrlCorrect(newUrl)) {
             super.getSockOut().println("Enter a correct new FTP ulr (e.g ftp://localhost:2121/myDir/): ");
-            newUrl = super.getSockIn().readLine();
+            newUrl = ReceptionTimeOut.receive(super.getSockIn(), super.getSocketClient());
         }
 
         this.currentProgrammer.setFtpUrl(newUrl);
         super.getSockOut().println("Url Changed, press a key to continue##");
-        super.getSockIn().readLine();
+        ReceptionTimeOut.receive(super.getSockIn(), super.getSocketClient());
+    }
+
+    private void performServiceAction(String action) throws IOException {
+        String className = "";
+        try {
+            super.getSockOut().println(action.equals("add") ?
+                    "Enter the service you want to add: " :
+                    ServiceRegistry.getListServicesOfProg(currentProgrammer).toString() +
+                            "##Enter the class name of service you want to update: "
+            );
+            className = ReceptionTimeOut.receive(super.getSockIn(), super.getSocketClient());
+            Class<?> classToCharge = this.currentProgrammer.loadClass(className);
+
+            // it's in addService/updateService that we cast Class<?> to Class<? extends Service> with .asSubclass
+            if (action.equals("add"))
+                ServiceRegistry.addService(classToCharge, this.currentProgrammer);
+            else
+                ServiceRegistry.updateService(classToCharge, this.currentProgrammer);
+
+            super.getSockOut().println(className + (action.equals("add") ?
+                    " is now added##Press a key to continue##" :
+                    " updated##Press a key to continue##")
+            );
+        } catch (ClassNotFoundException e) {
+            super.getSockOut().println(className + " isn't inside FTP server, press a key to retry##");
+        } catch (Exception e) {
+            super.getSockOut().println(e.getMessage() + " press a key to retry##");
+        }
+        ReceptionTimeOut.receive(super.getSockIn(), super.getSocketClient());
     }
 
     private void startActivity(int choice) throws IOException {
         switch (choice) {
             case 1:
-                ServiceAction sAdd = new AddServiceAction();
-                sAdd.performServiceAction(this.currentProgrammer, super.getSockOut(), super.getSockIn());
+                performServiceAction("add");
                 break;
             case 2:
-                ServiceAction sUpdate = new UpdateServiceAction();
-                sUpdate.performServiceAction(this.currentProgrammer, super.getSockOut(), super.getSockIn());
+                performServiceAction("update");
                 break;
             case 3:
                 changeProgrammerFtpUrl();
@@ -76,7 +103,7 @@ public class ServiceForProgrammer extends ServiceClient {
         String ftpUrl = "";
         while (!isFtpUrlCorrect(ftpUrl)) {
             super.getSockOut().println("Enter a correct FTP url (e.g ftp://localhost:2121/myDir/): ");
-            ftpUrl = super.getSockIn().readLine();
+            ftpUrl = ReceptionTimeOut.receive(super.getSockIn(), super.getSocketClient());
         }
         return ftpUrl;
     }
@@ -87,12 +114,12 @@ public class ServiceForProgrammer extends ServiceClient {
         try {
             this.currentProgrammer = ServiceRegistry.addProgrammer(login, pwd, ftpUrl);
             super.getSockOut().println("Account created, press to continue##");
-            super.getSockIn().readLine();
+            ReceptionTimeOut.receive(super.getSockIn(), super.getSocketClient());
             return true;
 
         } catch (Exception e) {
             super.getSockOut().println(e.getMessage() + " press a key to retry##");
-            super.getSockIn().readLine();
+            ReceptionTimeOut.receive(super.getSockIn(), super.getSocketClient());
             return false;
         }
     }
@@ -101,21 +128,21 @@ public class ServiceForProgrammer extends ServiceClient {
         Programmer p = ServiceRegistry.getProgrammer(login, pwd);
         if (p != null) {
             super.getSockOut().println("You are now connected, press a key to continue##");
-            super.getSockIn().readLine();
+            ReceptionTimeOut.receive(super.getSockIn(), super.getSocketClient());
             this.currentProgrammer = p;
             return true;
         } else {
             super.getSockOut().println("Connection problem, press a key to retry##");
-            super.getSockIn().readLine();
+            ReceptionTimeOut.receive(super.getSockIn(), super.getSocketClient());
             return false;
         }
     }
 
     private boolean isAccountHandlerSuccess(int num) throws IOException {
         super.getSockOut().println("Enter your login: ");
-        String login = super.getSockIn().readLine();
+        String login = ReceptionTimeOut.receive(super.getSockIn(), super.getSocketClient());
         super.getSockOut().println("Enter your password: ");
-        String pwd = super.getSockIn().readLine();
+        String pwd = ReceptionTimeOut.receive(super.getSockIn(), super.getSocketClient());
 
         return num == 1 ? connectionToAccount(login, pwd) : createAccount(login, pwd);
     }
@@ -124,10 +151,10 @@ public class ServiceForProgrammer extends ServiceClient {
         StringBuilder sb = new StringBuilder();
         sb.append("1. Sign in##");
         sb.append("2. Sign up##");
-        super.getSockOut().println(sb.toString());
+        super.getSockOut().println(sb);
 
         while (true) {
-            String msgCli = super.getSockIn().readLine();
+            String msgCli = ReceptionTimeOut.receive(super.getSockIn(), super.getSocketClient());
 
             if (msgCli.equals("quit")) {
                 break;
