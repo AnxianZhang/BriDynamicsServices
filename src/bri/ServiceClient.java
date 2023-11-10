@@ -1,7 +1,4 @@
-package bri.service;
-
-import bri.ReceptionTimeOut;
-import bri.service.GeneralService;
+package bri;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -21,9 +18,6 @@ public abstract class ServiceClient extends GeneralService {
 
     protected abstract boolean isAnActivityNumberInterval(int num);
 
-    protected void timeOutMsg() {
-        System.out.println("Time out of: " + super.getSocketClient().getInetAddress());
-    }
 
     protected boolean isDigit(String s) {
         try {
@@ -51,7 +45,7 @@ public abstract class ServiceClient extends GeneralService {
         showAllPossibleActivities();
 
         while (true) {
-            String msgCli = ReceptionTimeOut.receive(super.getSockIn(), super.getSocketClient());
+            String msgCli = super.getSockIn().readLine();
 
             if (msgCli.equals("quit")) {
                 break;
@@ -73,6 +67,7 @@ public abstract class ServiceClient extends GeneralService {
             System.out.println();
         } catch (IOException e) {
             System.out.println("Problem when closing socket in ServiceClient");
+            ;
         }
     }
 }

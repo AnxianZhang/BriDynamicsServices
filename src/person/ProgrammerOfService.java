@@ -38,7 +38,7 @@ public class ProgrammerOfService implements Programmer {
         }
     }
 
-    public Class<?> loadClass(String className) throws ClassNotFoundException, MalformedURLException {
+    public Class<?> laodClass(String className) throws ClassNotFoundException, MalformedURLException {
         this.refreshURLClassLoader();
         return this.serviceLoader.loadClass(className);
     }

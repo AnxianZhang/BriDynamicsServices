@@ -1,4 +1,4 @@
-package bri.service;
+package bri;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -12,7 +12,7 @@ public abstract class GeneralService implements Service {
     private final BufferedReader sockIn;
     private final PrintWriter sockOut;
 
-    protected GeneralService(Socket socketClient) throws IOException {
+    public GeneralService(Socket socketClient) throws IOException {
         this.socketClient = socketClient;
 
         BufferedReader sockIn1;

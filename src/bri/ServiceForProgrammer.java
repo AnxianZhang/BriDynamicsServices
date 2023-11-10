@@ -1,10 +1,7 @@
-package bri.service;
+package bri;
 
-import bri.Programmer;
-import bri.ReceptionTimeOut;
-import bri.ServiceRegistry;
-import bri.service.service_action.AddServiceAction;
-import bri.service.service_action.UpdateServiceAction;
+import bri.service_action.AddServiceAction;
+import bri.service_action.UpdateServiceAction;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -22,36 +19,46 @@ public class ServiceForProgrammer extends ServiceClient {
     }
 
     public String showActivities() {
-        return "Our activities for programmers:##" +
-                "1. Provide a new service##" +
-                "2. Update a service##" +
-                "3. Declare a change of FTP server address##";
+        StringBuilder activites = new StringBuilder();
+        activites.append("Our activities for programmers:##");
+        activites.append("1. Provide a new service##");
+        activites.append("2. Update a service##");
+        activites.append("3. Declare a change of FTP server address##");
+
+        // ========== bonus ==========
+//        activites.append("4. (Démarrer/arrêter un service)##");
+//        activites.append("5. (Désinstaller un service )##");
+        return activites.toString();
     }
 
     private void changeProgrammerFtpUrl() throws IOException {
         String newUrl = "";
         while (!isFtpUrlCorrect(newUrl)) {
             super.getSockOut().println("Enter a correct new FTP ulr (e.g ftp://localhost:2121/myDir/): ");
-            newUrl = ReceptionTimeOut.receive(super.getSockIn(), super.getSocketClient());
+            newUrl = super.getSockIn().readLine();
         }
 
         this.currentProgrammer.setFtpUrl(newUrl);
         super.getSockOut().println("Url Changed, press a key to continue##");
-        ReceptionTimeOut.receive(super.getSockIn(), super.getSocketClient());
+        super.getSockIn().readLine();
     }
 
     private void startActivity(int choice) throws IOException {
         switch (choice) {
             case 1:
                 ServiceAction sAdd = new AddServiceAction();
-                sAdd.performServiceAction(this.currentProgrammer, super.getSockOut(), super.getSockIn(), super.getSocketClient());
+                sAdd.performServiceAction(this.currentProgrammer, super.getSockOut(), super.getSockIn());
                 break;
             case 2:
                 ServiceAction sUpdate = new UpdateServiceAction();
-                sUpdate.performServiceAction(this.currentProgrammer, super.getSockOut(), super.getSockIn(), super.getSocketClient());
+                sUpdate.performServiceAction(this.currentProgrammer, super.getSockOut(), super.getSockIn());
                 break;
             case 3:
                 changeProgrammerFtpUrl();
+                break;
+            case 4:
+                break;
+            case 5:
                 break;
             default:
                 System.out.println("Choix invalide");
@@ -79,7 +86,7 @@ public class ServiceForProgrammer extends ServiceClient {
         String ftpUrl = "";
         while (!isFtpUrlCorrect(ftpUrl)) {
             super.getSockOut().println("Enter a correct FTP url (e.g ftp://localhost:2121/myDir/): ");
-            ftpUrl = ReceptionTimeOut.receive(super.getSockIn(), super.getSocketClient());
+            ftpUrl = super.getSockIn().readLine();
         }
         return ftpUrl;
     }
@@ -90,12 +97,12 @@ public class ServiceForProgrammer extends ServiceClient {
         try {
             this.currentProgrammer = ServiceRegistry.addProgrammer(login, pwd, ftpUrl);
             super.getSockOut().println("Account created, press to continue##");
-            ReceptionTimeOut.receive(super.getSockIn(), super.getSocketClient());
+            super.getSockIn().readLine();
             return true;
 
         } catch (Exception e) {
             super.getSockOut().println(e.getMessage() + " press a key to retry##");
-            ReceptionTimeOut.receive(super.getSockIn(), super.getSocketClient());
+            super.getSockIn().readLine();
             return false;
         }
     }
@@ -104,21 +111,21 @@ public class ServiceForProgrammer extends ServiceClient {
         Programmer p = ServiceRegistry.getProgrammer(login, pwd);
         if (p != null) {
             super.getSockOut().println("You are now connected, press a key to continue##");
-            ReceptionTimeOut.receive(super.getSockIn(), super.getSocketClient());
+            super.getSockIn().readLine();
             this.currentProgrammer = p;
             return true;
         } else {
             super.getSockOut().println("Connection problem, press a key to retry##");
-            ReceptionTimeOut.receive(super.getSockIn(), super.getSocketClient());
+            super.getSockIn().readLine();
             return false;
         }
     }
 
     private boolean isAccountHandlerSuccess(int num) throws IOException {
         super.getSockOut().println("Enter your login: ");
-        String login = ReceptionTimeOut.receive(super.getSockIn(), super.getSocketClient());
+        String login = super.getSockIn().readLine();
         super.getSockOut().println("Enter your password: ");
-        String pwd = ReceptionTimeOut.receive(super.getSockIn(), super.getSocketClient());
+        String pwd = super.getSockIn().readLine();
 
         return num == 1 ? connectionToAccount(login, pwd) : createAccount(login, pwd);
     }
@@ -130,7 +137,7 @@ public class ServiceForProgrammer extends ServiceClient {
         super.getSockOut().println(sb.toString());
 
         while (true) {
-            String msgCli = ReceptionTimeOut.receive(super.getSockIn(), super.getSocketClient());
+            String msgCli = super.getSockIn().readLine();
 
             if (msgCli.equals("quit")) {
                 break;
@@ -182,7 +189,7 @@ public class ServiceForProgrammer extends ServiceClient {
             searchAccount();
             super.numActivityToLaunch();
         } catch (IOException e) {
-            super.timeOutMsg();
+            throw new RuntimeException(e);
         } finally {
             super.closeSocketClient();
         }

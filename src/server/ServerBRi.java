@@ -1,6 +1,6 @@
-package bri;
+package server;
 
-import bri.service.Service;
+import bri.Service;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
