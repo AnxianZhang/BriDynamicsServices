@@ -3,8 +3,6 @@ package bri.service;
 import bri.Programmer;
 import bri.ReceptionTimeOut;
 import bri.ServiceRegistry;
-import bri.service.service_action.AddServiceAction;
-import bri.service.service_action.UpdateServiceAction;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -40,15 +38,50 @@ public class ServiceForProgrammer extends ServiceClient {
         ReceptionTimeOut.receive(super.getSockIn(), super.getSocketClient());
     }
 
+    private void addNewService() throws IOException {
+        String className = "";
+        try {
+            super.getSockOut().println("Enter the service you want to add: ");
+            className = getSockIn().readLine();
+            Class<?> classToCharge = this.currentProgrammer.loadClass(className);
+            // it's in addService that we cast Class<?> to Class<? extends Service> with .asSubclass
+            ServiceRegistry.addService(classToCharge, this.currentProgrammer);
+            super.getSockOut().println(className + " is now added##Press a key to continue##");
+        } catch (ClassNotFoundException e) {
+            super.getSockOut().println(className + " isn't inside FTP server, press a key to retry##");
+        } catch (Exception e) {
+            super.getSockOut().println(e.getMessage() + " press a key to retry##");
+        }
+        ReceptionTimeOut.receive(super.getSockIn(), super.getSocketClient());
+    }
+
+    private void updateService() throws IOException {
+        String classToRecharge = "";
+        try {
+            super.getSockOut().println(ServiceRegistry.getListServicesOfProg(currentProgrammer).toString() + "##Enter the class name of service you want to update: ");
+            classToRecharge = ReceptionTimeOut.receive(super.getSockIn(), super.getSocketClient());
+            Class<?> classToCharge = this.currentProgrammer.loadClass(classToRecharge);
+            ServiceRegistry.updateService(classToCharge, this.currentProgrammer);
+            super.getSockOut().println(classToCharge + " updated##Press a key to continue##");
+        } catch (ClassNotFoundException e) {
+            super.getSockOut().println(classToRecharge + " isn't inside FTP server, press a key to retry##");
+        } catch (Exception e) {
+            super.getSockOut().println(e.getMessage() + "##Press a key to retry##");
+        }
+        ReceptionTimeOut.receive(super.getSockIn(), super.getSocketClient());
+    }
+
     private void startActivity(int choice) throws IOException {
         switch (choice) {
             case 1:
-                ServiceAction sAdd = new AddServiceAction();
-                sAdd.performServiceAction(this.currentProgrammer, super.getSockOut(), super.getSockIn(), super.getSocketClient());
+//                ServiceAction sAdd = new AddServiceAction();
+//                sAdd.performServiceAction(this.currentProgrammer, super.getSockOut(), super.getSockIn(), super.getSocketClient());
+                addNewService();
                 break;
             case 2:
-                ServiceAction sUpdate = new UpdateServiceAction();
-                sUpdate.performServiceAction(this.currentProgrammer, super.getSockOut(), super.getSockIn(), super.getSocketClient());
+//                ServiceAction sUpdate = new UpdateServiceAction();
+//                sUpdate.performServiceAction(this.currentProgrammer, super.getSockOut(), super.getSockIn(), super.getSocketClient());
+                updateService();
                 break;
             case 3:
                 changeProgrammerFtpUrl();
