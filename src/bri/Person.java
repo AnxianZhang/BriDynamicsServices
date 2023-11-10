@@ -1,4 +1,4 @@
-package person;
+package bri;
 
 public interface Person {
     boolean isSameLogin(String login);

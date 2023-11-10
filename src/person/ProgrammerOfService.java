@@ -1,12 +1,14 @@
 package person;
 
+import bri.Programmer;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Objects;
 
-public class ProgrammerOfService implements Programmer{
-    private String login;
+public class ProgrammerOfService implements Programmer {
+    private final String login;
     private final String hashedPwd;
     private String ftpUrl;
 

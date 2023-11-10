@@ -1,14 +1,11 @@
 package app;
 
-import server.ServeurBRi;
+import server.ServerBRi;
 import bri.ServiceAmateur;
 import bri.ServiceForProgrammer;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.util.Scanner;
 
 public class BriLaunch {
     private static final int PROGRAMMER_PORT;
@@ -20,15 +17,8 @@ public class BriLaunch {
     }
 
     public static void main(String[] args) throws IOException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
-//        System.out.println("Pour ajouter une activité, celle-ci doit être présente sur votre serveur ftp");
-//        System.out.println("A tout instant, en tapant le nom de la classe, vous pouvez l'intégrer");
-//        System.out.println("Les clients se connectent au serveur 3000 pour lancer une activité");
-
-//        new Thread(new server.ServeurBRi(PROGRAMMER_PORT)).start();
-//        new Thread(new server.ServeurBRi(AMATEUR_PORT)).start();
-
-        ServeurBRi sProgrammer = new ServeurBRi(ServiceForProgrammer.class, PROGRAMMER_PORT);
-        ServeurBRi sAmateur = new ServeurBRi(ServiceAmateur.class, AMATEUR_PORT);
+        ServerBRi sProgrammer = new ServerBRi(ServiceForProgrammer.class, PROGRAMMER_PORT);
+        ServerBRi sAmateur = new ServerBRi(ServiceAmateur.class, AMATEUR_PORT);
 
         Thread t1 = new Thread(sProgrammer);
         Thread t2 = new Thread(sAmateur);

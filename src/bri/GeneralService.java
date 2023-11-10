@@ -7,10 +7,6 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.SocketException;
 
-/**
- * la classe pourra être fusioner avec ServiceClient
- * ==> à voir s'il y a de la place
- */
 public abstract class GeneralService implements Service {
     private final Socket socketClient;
     private final BufferedReader sockIn;
@@ -41,7 +37,7 @@ public abstract class GeneralService implements Service {
         return this.sockIn;
     }
 
-    protected void println(String msg) {
-        this.sockOut.println(msg);
+    protected PrintWriter getSockOut() {
+        return this.sockOut;
     }
 }

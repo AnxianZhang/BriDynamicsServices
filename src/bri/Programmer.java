@@ -1,6 +1,4 @@
-package person;
-
-import bri.Service;
+package bri;
 
 import java.net.MalformedURLException;
 
