@@ -19,16 +19,10 @@ public class ServiceForProgrammer extends ServiceClient {
     }
 
     public String showActivities() {
-        StringBuilder activites = new StringBuilder();
-        activites.append("Our activities for programmers:##");
-        activites.append("1. Provide a new service##");
-        activites.append("2. Update a service##");
-        activites.append("3. Declare a change of FTP server address##");
-
-        // ========== bonus ==========
-//        activites.append("4. (Démarrer/arrêter un service)##");
-//        activites.append("5. (Désinstaller un service )##");
-        return activites.toString();
+        return "Our activities for programmers:##" +
+                "1. Provide a new service##" +
+                "2. Update a service##" +
+                "3. Declare a change of FTP server address##";
     }
 
     private void changeProgrammerFtpUrl() throws IOException {
@@ -55,10 +49,6 @@ public class ServiceForProgrammer extends ServiceClient {
                 break;
             case 3:
                 changeProgrammerFtpUrl();
-                break;
-            case 4:
-                break;
-            case 5:
                 break;
             default:
                 System.out.println("Choix invalide");
