@@ -10,19 +10,19 @@ public class HashPassword {
         throw new IllegalStateException("HashPassword is an utility class");
     }
 
-    public static byte [] generateSalt(){
-        byte [] salt =  new byte[16];
+    public static byte[] generateSalt() {
+        byte[] salt = new byte[16];
         SecureRandom random = new SecureRandom();
         random.nextBytes(salt);
 
         return salt;
     }
 
-    public static String getHashPassword(String pwd, byte [] salt){
+    public static String getHashPassword(String pwd, byte[] salt) {
         try {
             MessageDigest mD = MessageDigest.getInstance("SHA-256");
             mD.update(salt);
-            byte [] hashedPwd = mD.digest(pwd.getBytes());
+            byte[] hashedPwd = mD.digest(pwd.getBytes());
 
             return Base64.getEncoder().encodeToString(hashedPwd);
         } catch (NoSuchAlgorithmException e) {

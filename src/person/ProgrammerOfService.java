@@ -14,26 +14,26 @@ public class ProgrammerOfService implements Programmer {
 
     private URLClassLoader serviceLoader;
 
-    private final byte [] salt;
+    private final byte[] salt;
 
     public ProgrammerOfService(String login, String pwd, String ftpUrl) throws MalformedURLException {
         this.login = login;
         this.salt = HashPassword.generateSalt();
         this.hashedPwd = HashPassword.getHashPassword(pwd, this.salt);
         this.ftpUrl = ftpUrl;
-        this.serviceLoader = URLClassLoader.newInstance(new URL[] { new URL(ftpUrl)});
+        this.serviceLoader = URLClassLoader.newInstance(new URL[]{new URL(ftpUrl)});
     }
 
     private void refreshURLClassLoader() throws MalformedURLException {
-        this.serviceLoader = URLClassLoader.newInstance(new URL[] { new URL(this.ftpUrl)});
+        this.serviceLoader = URLClassLoader.newInstance(new URL[]{new URL(this.ftpUrl)});
     }
 
-    public void setFtpUrl(String newFtpUl){
+    public void setFtpUrl(String newFtpUl) {
         this.ftpUrl = newFtpUl;
-        try{
+        try {
             refreshURLClassLoader();
             System.out.println(this.serviceLoader);
-        } catch (MalformedURLException e){
+        } catch (MalformedURLException e) {
             /* tested in ServiceForProgrammer */
         }
     }
@@ -44,7 +44,7 @@ public class ProgrammerOfService implements Programmer {
     }
 
     @Override
-    public boolean isSamePwd(String pdwIn){
+    public boolean isSamePwd(String pdwIn) {
         return this.hashedPwd.equals(HashPassword.getHashPassword(pdwIn, this.salt));
     }
 
@@ -54,7 +54,7 @@ public class ProgrammerOfService implements Programmer {
     }
 
     @Override
-    public boolean isSameLogin(String login){
+    public boolean isSameLogin(String login) {
         return this.login.equals(login);
     }
 

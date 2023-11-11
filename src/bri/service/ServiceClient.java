@@ -32,7 +32,7 @@ public abstract class ServiceClient extends GeneralService {
     }
 
     private boolean isAnActivityNumber(String s) {
-        if (isDigit(s)){
+        if (isDigit(s)) {
             int num = Integer.parseInt(s);
             return isAnActivityNumberInterval(num);
         }

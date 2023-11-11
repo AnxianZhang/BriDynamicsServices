@@ -53,9 +53,9 @@ public class ServiceRegistry {
             throw new Exception("The class must have a public static String toStringue() method with no exceptions");
     }
 
-    private static boolean containClass(Class<?> c, Programmer p){
-        synchronized (servicesClasses){
-            for (int i = 0; i < servicesClasses.get(p).size(); ++i){
+    private static boolean containClass(Class<?> c, Programmer p) {
+        synchronized (servicesClasses) {
+            for (int i = 0; i < servicesClasses.get(p).size(); ++i) {
                 if (servicesClasses.get(p).get(i).toString().equals(c.toString())) {
                     return true;
                 }
@@ -71,7 +71,7 @@ public class ServiceRegistry {
             System.out.println("Class: " + classToCharge + " added by the programmer " + p.getLogin());
             return;
         }
-        throw new Exception ("This class is already added");
+        throw new Exception("This class is already added");
     }
 
     public static Class<? extends Service> getServiceClass(int numService) {
@@ -91,12 +91,14 @@ public class ServiceRegistry {
     }
 
     public static Programmer getProgrammer(String login, String pwd) {
-        for (Programmer p : programmers) {
-            if (p.isSameLogin(login) && p.isSamePwd(pwd)) {
-                return p;
+        synchronized (programmers) {
+            for (Programmer p : programmers) {
+                if (p.isSameLogin(login) && p.isSamePwd(pwd)) {
+                    return p;
+                }
             }
+            return null;
         }
-        return null;
     }
 
     public static List<Class<? extends Service>> getListServicesOfProg(Programmer p) throws Exception {
@@ -110,7 +112,7 @@ public class ServiceRegistry {
 
         List<Class<? extends Service>> serviceList = getListServicesOfProg(currentProgrammer);
 
-        synchronized (servicesClasses){
+        synchronized (servicesClasses) {
             for (int i = 0; i < serviceList.size(); ++i) {
                 if (serviceList.get(i).toString().equals(classToCharge.toString())) {
                     serviceList.set(i, classToCharge.asSubclass(Service.class));
