@@ -1,7 +1,6 @@
 package bri.service;
 
 import bri.Service;
-import bri.ServiceRegistry;
 
 import java.io.IOException;
 import java.lang.reflect.Constructor;

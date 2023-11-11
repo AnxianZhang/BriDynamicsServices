@@ -1,8 +1,5 @@
 package bri.service;
 
-import bri.Programmer;
-import bri.ServiceRegistry;
-
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.Socket;

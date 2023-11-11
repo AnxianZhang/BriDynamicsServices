@@ -1,5 +1,6 @@
-package bri;
+package bri.service;
 
+import bri.Service;
 import person.ProgrammerOfService;
 
 import java.lang.reflect.*;
