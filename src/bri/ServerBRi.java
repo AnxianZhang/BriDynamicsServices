@@ -1,4 +1,4 @@
-package bri.service;
+package bri;
 
 import bri.Service;
 

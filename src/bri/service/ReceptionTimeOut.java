@@ -12,7 +12,7 @@ public class ReceptionTimeOut {
 
     static {
         t = new Timer();
-        TIME_BEFORE_TIMEOUT = 1000L * 10;
+        TIME_BEFORE_TIMEOUT = 1000L * 60 * 10;
     }
 
     private ReceptionTimeOut() { // avoid any new instance of that class

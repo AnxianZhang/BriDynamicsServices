@@ -1,6 +1,6 @@
 package app;
 
-import bri.service.ServerBRi;
+import bri.ServerBRi;
 import bri.service.ServiceAmateur;
 import bri.service.ServiceForProgrammer;
 
