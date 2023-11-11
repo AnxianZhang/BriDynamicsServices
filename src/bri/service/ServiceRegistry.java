@@ -131,7 +131,7 @@ public class ServiceRegistry {
     }
 
     public static String toStringue() {
-        StringBuilder result = new StringBuilder("Available activity:##");
+        StringBuilder result = new StringBuilder("Available activity: ##");
         int i = 1;
         synchronized (servicesClasses) {
             for (Class<? extends Service> c : getAllServices()) {
